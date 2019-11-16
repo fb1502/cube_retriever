@@ -37,10 +37,12 @@ Change the default data_source and initial_catalog according to your own cube se
 
 ## 5. Examples
 
-Execute one line of MDX query and get the return data in the format of Pandas Dataframe.
+Execute MDX queries and get the return data in the format of Pandas Dataframe.
 
     >>> import cube_retriever as cube
-    >>> mdx_qry = """
+    >>> retriever = cube.CubeRetriever() 
+    >>> retriever.conn() # Establish connection to cube
+    >>> mdx_qry_1 = """
             SELECT  
             { [Measures].[Sales Amount],   
                 [Measures].[Tax Amount] } ON COLUMNS,  
@@ -49,8 +51,15 @@ Execute one line of MDX query and get the return data in the format of Pandas Da
             FROM [Adventure Works]  
             WHERE ( [Sales Territory].[Southwest] )  
         """
-    >>> retriever = cube.CubeRetriever()
-    >>> df = retriever.mdx_query(mdx_qry)
+    >>> mdx_qry_2 = """
+            SELECT
+            { [Measures].[Unit Sales], [Measures].[Store Sales] } ON COLUMNS,
+            { [Time].[1997], [Time].[1998] } ON ROWS
+            FROM Sales
+            WHERE ( [Store].[USA].[CA] )
+        """
+    >>> df_1 = retriever.mdx_query(mdx_qry_1)
+    >>> df_2 = retriever.mdx_query(mdx_qry_2)
 
 Execute one line of MDX query and store the data into an excel file.
 
